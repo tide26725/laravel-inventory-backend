@@ -25,13 +25,22 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|min:5',
-            'slug' => 'required',
-            'price' => 'required',
-        ]);
+        // เช็คสิทธิ์ role ว่าเป็น admin (1)
+        $user = auth()->user();
 
-        return Product::create($request->all());
+        if ($user->tokenCan("1")) {
+            $request->validate([
+                'name' => 'required|min:5',
+                'slug' => 'required',
+                'price' => 'required',
+            ]);
+
+            return Product::create($request->all());
+        } else {
+            return [
+                'status' => 'Permission denied to create'
+            ];
+        }
     }
 
     /**
@@ -54,10 +63,17 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-       $product = Product::find($id);
-       $product->update($request->all());
+        $user = auth()->user();
+        if ($user->tokenCan("1")) {
+            $product = Product::find($id);
+            $product->update($request->all());
 
-       return $product;
+            return $product;
+        } else {
+            return [
+                'status' => 'Permission denied to create'
+            ];
+        }
     }
 
     /**
@@ -68,6 +84,13 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        return Product::destroy($id);
+        $user = auth()->user();
+        if ($user->tokenCan("1")) {
+            return Product::destroy($id);
+        } else {
+            return [
+                'status' => 'Permission denied to create'
+            ];
+        }
     }
 }
