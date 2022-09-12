@@ -14,5 +14,14 @@ class Product extends Model
         'slug',
         'description',
         'price',
+        'image',
+        'user_id',
     ];
+
+    /**
+     * Relationship to Users
+     */
+    public function users() {
+        return $this->belongsTo(User::class);
+    }
 }

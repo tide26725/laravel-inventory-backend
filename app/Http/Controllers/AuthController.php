@@ -60,7 +60,7 @@ class AuthController extends Controller
         if (!$user || !Hash::check($fields['password'], $user->password)) {
             return response([
                 'message' => 'Inavalid Login'
-            ]);
+            ], 401);
         } else {
             // ลบ Token เก่าออกแล้วค่อยสร้างใหม่
             $user->tokens()->delete();
